@@ -1,0 +1,15 @@
+*.pyc
+*.DS_Store
+local_settings.py
+CA/
+keeper
+instances
+keys
+build/*
+build-stamp
+engine.egg-info
+.engine-venv
+.venv
+*.sqlite
+*.log
+po/*.pot

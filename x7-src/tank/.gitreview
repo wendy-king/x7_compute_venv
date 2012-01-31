@@ -1,0 +1,4 @@
+[gerrit]
+host=review.x7.org
+port=29418
+project=x7/tank.git

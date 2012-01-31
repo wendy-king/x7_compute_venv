@@ -1,0 +1,14 @@
+include run_tests.sh ChangeLog
+include README builddeb.sh
+include MANIFEST.in pylintrc
+include Authors
+include run_tests.py
+include tank/registry/db/migrate_repo/README
+include tank/registry/db/migrate_repo/migrate.cfg
+include tank/registry/db/migrate_repo/versions/*.sql
+include tank/tests/unit/test_migrations.conf
+include tank/tests/functional/data/*
+include tank/tests/var/*
+graft doc
+graft etc
+graft tools

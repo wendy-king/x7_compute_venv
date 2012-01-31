@@ -1,0 +1,46 @@
+======
+Tank
+======
+
+Tank is a project that defines services for discovering, registering,
+retrieving and storing virtual machine images. The discovery and registration
+responsibilities are handled by the `tank-registry` component while the
+retrieval and storage responsiblities are handled by the `tank-api`
+component.
+
+
+Quick Start
+-----------
+
+If you'd like to run trunk, you can clone the git repo:
+
+    git clone git@github.com:x7/tank.git
+
+
+Install Tank by running::
+
+    python setup.py build
+    sudo python setup.py install
+
+
+By default, `tank-registry` will use a SQLite database. If you'd like to use
+MySQL, or make other adjustments, you can modify the tank.cnf file (see
+documentation for more details).
+
+
+Now that Tank is installed, you can start the service.  The easiest way to
+do that is by using the `tank-control` utility which runs both the
+`tank-api` and `tank-registry` services::
+
+    tank-control all start
+
+
+Once both services are running, you can now use the `tank` tool to
+register new images in Tank.
+
+    tank add name="My Image" < /path/to/my/image
+
+
+With an image registered, you can now configure your IAAS provider to use
+Tank as its image service and begin spinning up instances from your
+newly registered images.

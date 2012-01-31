@@ -1,0 +1,44 @@
+include HACKING LICENSE run_tests.py run_tests.sh
+include README exercise_rsapi.py
+include MANIFEST.in pylintrc Authors
+graft engine/CA
+graft doc
+graft smoketests
+graft tools
+graft etc
+graft contrib
+graft po
+graft plugins
+graft engine/api/x7/schemas
+include engine/auth/*.schema
+include engine/auth/enginerc.template
+include engine/auth/opendj.sh
+include engine/auth/slap.sh
+include engine/cloudpipe/bootscript.sh
+include engine/cloudpipe/client.ovpn.template
+include engine/cloudpipe/bootscript.template
+include engine/compute/fakevirtinstance.xml
+include engine/compute/interfaces.template
+include engine/console/xvp.conf.template
+include engine/db/sqlalchemy/migrate_repo/migrate.cfg
+include engine/db/sqlalchemy/migrate_repo/README
+include engine/db/sqlalchemy/migrate_repo/versions/*.sql
+include engine/virt/interfaces.template
+include engine/virt/libvirt*.xml.template
+include engine/virt/cpuinfo.xml.template
+include engine/tests/CA/
+include engine/tests/CA/cacert.pem
+include engine/tests/CA/private/
+include engine/tests/CA/private/cakey.pem
+include engine/tests/bundle/
+include engine/tests/bundle/1mb.manifest.xml
+include engine/tests/bundle/1mb.no_kernel_or_ramdisk.manifest.xml
+include engine/tests/bundle/1mb.part.0
+include engine/tests/bundle/1mb.part.1
+include engine/tests/api/ec2/public_key/*
+include engine/tests/db/engine.austin.sqlite
+include engine/tests/image/*.tar.gz
+include plugins/xenapi/README
+include plugins/xenapi/etc/xapi.d/plugins/objectstore
+include plugins/xenapi/etc/xapi.d/plugins/pluginlib_engine.py
+global-exclude *.pyc

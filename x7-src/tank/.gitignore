@@ -1,0 +1,10 @@
+*.pyc
+*.swp
+*.log
+.tank-venv
+.venv
+build
+dist
+tank.egg-info
+tank/vcsversion.py
+tests.sqlite

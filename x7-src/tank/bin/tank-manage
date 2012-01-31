@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
+
+# Copyright 2010 United States Government as represented by the
+# Administrator of the National Aeronautics and Space Administration.
+# Copyright 2011 X7 LLC.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+"""
+Tank Management Utility
+"""
+
+# FIXME(sirp): When we have tank-admin we can consider merging this into it
+# Perhaps for consistency with Engine, we would then rename tank-admin ->
+# tank-manage (or the other way around)
+
+import gettext
+import os
+import sys
+
+# If ../tank/__init__.py exists, add ../ to Python search path, so that
+# it will override what happens to be installed in /usr/(local/)lib/python...
+possible_topdir = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]),
+                                   os.pardir,
+                                   os.pardir))
+if os.path.exists(os.path.join(possible_topdir, 'tank', '__init__.py')):
+    sys.path.insert(0, possible_topdir)
+
+gettext.install('tank', unicode=1)
+
+from tank.common import cfg
+from tank.common import config
+from tank.common import exception
+import tank.registry.db
+import tank.registry.db.migration
+
+
+def do_db_version(conf, args):
+    """Print database's current migration level"""
+    print tank.registry.db.migration.db_version(conf)
+
+
+def do_upgrade(conf, args):
+    """Upgrade the database's migration level"""
+    try:
+        db_version = args[1]
+    except IndexError:
+        db_version = None
+
+    tank.registry.db.migration.upgrade(conf, version=db_version)
+
+
+def do_downgrade(conf, args):
+    """Downgrade the database's migration level"""
+    try:
+        db_version = args[1]
+    except IndexError:
+        raise exception.MissingArgumentError(
+            "downgrade requires a version argument")
+
+    tank.registry.db.migration.downgrade(conf, version=db_version)
+
+
+def do_version_control(conf, args):
+    """Place a database under migration control"""
+    tank.registry.db.migration.version_control(conf)
+
+
+def do_db_sync(conf, args):
+    """Place a database under migration control and upgrade"""
+    try:
+        db_version = args[1]
+    except IndexError:
+        db_version = None
+    tank.registry.db.migration.db_sync(conf, version=db_version)
+
+
+def dispatch_cmd(conf, args):
+    """Search for do_* cmd in this module and then run it"""
+    cmd = args[0]
+    try:
+        cmd_func = globals()['do_%s' % cmd]
+    except KeyError:
+        sys.exit("ERROR: unrecognized command '%s'" % cmd)
+
+    try:
+        cmd_func(conf, args)
+    except exception.TankException, e:
+        sys.exit("ERROR: %s" % e)
+
+
+def main():
+    try:
+        # We load the tank-registry config section because
+        # sql_connection is only part of the tank registry.
+        default_config_files = \
+            cfg.find_config_files(project='tank', prog='tank-registry')
+
+        conf = \
+            config.TankConfigOpts(default_config_files=default_config_files,
+                                    usage="%prog [options] <cmd>")
+        tank.registry.db.add_options(conf)
+        args = conf()
+        config.setup_logging(conf)
+    except RuntimeError, e:
+        sys.exit("ERROR: %s" % e)
+
+    if not args:
+        conf.print_usage()
+        sys.exit(1)
+
+    dispatch_cmd(conf, args)
+
+
+if __name__ == '__main__':
+    main()
